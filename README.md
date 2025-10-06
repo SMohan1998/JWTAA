@@ -1,79 +1,119 @@
-# Auth-JWT-Node (Example)
+JWT Authentication & Authorization API (Node.js + Express + MongoDB)
+📌 Overview
 
-## What this project does
-Simple Node.js application demonstrating user registration, login and protected routes using:
-- Express.js (web framework)
-- Mongoose (MongoDB ODM)
-- bcryptjs (password hashing)
-- jsonwebtoken (JWT token generation & verification)
-- express-validator (input validation)
+This is a backend project built with Node.js, Express, MongoDB (Mongoose), and JWT (JSON Web Tokens).
+It demonstrates a simple authentication and authorization flow:
 
-## Prerequisites (what to install)
-1. **Node.js & npm**: Verify with:
-   - `node -v`
-   - `npm -v`
-   If missing, install Node.js (that includes npm) from the official website for your OS.
+✅ User Registration
 
-2. **MongoDB**:
-   - Option A: Install MongoDB locally and ensure the daemon is running.
-   - Option B: Use MongoDB Atlas (cloud). If using Atlas, copy the connection string into `MONGO_URI` in `.env`.
+✅ User Login (returns JWT token)
 
-3. (Optional) **Postman** to test API endpoints.
+✅ Protected Route (requires token)
 
-## Setup steps (quick)
-1. Copy `.env.example` to `.env` and update values:
-   - `MONGO_URI` (e.g. mongodb://localhost:27017/auth-demo or Atlas URI)
-   - `JWT_SECRET` must be a long random string.
+✅ Middleware to verify JWT
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+✅ Fetch user details from the token
 
-3. Run in development (requires nodemon):
-   ```bash
-   npm run dev
-   ```
-   Or production:
-   ```bash
-   npm start
-   ```
+⚙️ Tech Stack
 
-4. Test with Postman:
-   - POST `http://localhost:5000/api/auth/register`
-     Body (JSON):
-     {
-       "username": "mohan",
-       "email": "mohan@example.com",
-       "password": "secret123"
-     }
-   - POST `http://localhost:5000/api/auth/login`
-     Body (JSON):
-     {
-       "email":"mohan@example.com",
-       "password":"secret123"
-     }
-     Response contains `{ "token": "<JWT>" }`
-   - GET `http://localhost:5000/api/user/me`
-     Add header: `Authorization: Bearer <JWT>`
+Node.js (runtime)
 
-## Files included
-- `server.js` - entry point and route mounting
-- `config/db.js` - mongoose connection helper
-- `models/User.js` - Mongoose schema for users
-- `controllers/*` - auth and user controllers
-- `middlewares/auth.js` - JWT verification middleware
-- `routes/*` - API routes
-- `.env.example` - environment variables example
+Express.js (server framework)
 
-## Troubleshooting
-- `MongoNetworkError` = check `MONGO_URI` and that MongoDB is reachable.
-- `Token is not valid` = make sure `JWT_SECRET` is identical when signing and verifying.
-- `E11000 duplicate key` on registration = email already used.
+MongoDB + Mongoose (database + ODM)
 
-## Notes
-- This is a minimal example. For production add:
-  - stronger password policy,
-  - refresh tokens or longer token rotation,
-  - rate-limiting, logging, helmet, input sanitization,
-  - HTTPS and secure cookie usage.
+bcryptjs (password hashing)
+
+jsonwebtoken (JWT creation & verification)
+
+dotenv (environment variables)
+
+
+📂 Project Structure
+jwt-auth-node/
+|__ config
+|   └── db.js            # Used to connect to mongodb
+│── models/
+│   └── User.js          # Mongoose user schema
+│── middleware/
+│   └── auth.js          # JWT verification middleware
+│── routes/
+│   ├── auth.js          # Register & login routes
+│   └── protected.js     # Protected route (requires token)      
+│   └── user.js          # User route
+│── controllers/
+│   └── authController.js# Business logic for auth
+    └── UserController.js# User related logic 
+│── server.js            # Main entry point
+│── .env                 # Environment variables
+│── .gitignore           # Ignore node_modules & .env
+│── package.json
+│── README.md
+
+📌 API Endpoints
+🔹 Register User
+
+POST [/api/auth/register](http://localhost:5000/api/auth/register)
+Body (JSON):
+
+{
+    "username": "Nikhil",
+    "email": "Nikhil@fsd.com",
+    "password": "Password123"
+}
+
+
+Response: [201 created]
+Body (JSON):
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjhlMzM0N2IxYzg0ODc5MDM2MWYyMDBhIn0sImlhdCI6MTc1OTcyMDU3MSwiZXhwIjoxNzYyMzEyNTcxfQ.fX6yOvaL686ATvvbKFQFbQA7W0GsWskgNATRFOkKbDc",
+    "user": {
+        "id": "68e3347b1c848790361f200a",
+        "username": "Nikhil",
+        "email": "nikhil@fsd.com"
+    }
+}
+
+🔹 Login User
+
+POST [/api/auth/login](http://localhost:5000/api/auth/login)
+Body (JSON):
+
+{
+    "email": "Nikhil@fsd.com",
+    "password": "Password123"
+}
+
+
+Response: [200 OK]
+Body (JSON):
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGUzMzQ3YjFjODQ4NzkwMzYxZjIwMGEiLCJpYXQiOjE3NTk3MjA4MDIsImV4cCI6MTc1OTcyNDQwMn0.wwKPBNzQL0DKGFaK5_UKibrm9sBx6vNU5VNRI1rBRD0",
+    "user": {
+        "id": "68e3347b1c848790361f200a",
+        "username": "Nikhil",
+        "email": "nikhil@fsd.com"
+    }
+}
+
+🔹 Protected Route (Get User Info)
+
+GET http://localhost:5000/api/protected
+
+Headers:
+
+Authorization: Bearer {{token}}
+
+
+Response (200 OK):
+
+{
+    "msg": "This is a protected route",
+    "user": {
+        "userId": "68e3347b1c848790361f200a",
+        "iat": 1759720802,
+        "exp": 1759724402
+    }
+}
