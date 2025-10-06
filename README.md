@@ -1,4 +1,5 @@
-JWT Authentication & Authorization API (Node.js + Express + MongoDB)
+JWT Authentication & Authorization API (Node.js + Express + MongoDB + Postman)
+
 📌 Overview
 
 This is a backend project built with Node.js, Express, MongoDB (Mongoose), and JWT (JSON Web Tokens).
@@ -28,6 +29,8 @@ jsonwebtoken (JWT creation & verification)
 
 dotenv (environment variables)
 
+Postman (to send API request)
+
 
 📂 Project Structure
 jwt-auth-node/
@@ -47,6 +50,8 @@ jwt-auth-node/
 │── server.js            # Main entry point
 │── .env                 # Environment variables
 │── .gitignore           # Ignore node_modules & .env
+|__ JWT Auth API.postman_collection.json   
+|__ JWT Auth Local.postman_environment.json
 │── package.json
 │── README.md
 
